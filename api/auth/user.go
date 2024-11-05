@@ -79,6 +79,21 @@ func (u User) Delete(db *sql.DB) error {
 	return nil
 }
 
+func (u User) VerifyUserToken(db *sql.DB) error {
+	query := `SELECT * FROM groceries.users WHERE id = $1`
+
+	resp, err := db.Exec(query, u.Id)
+
+	nRows, _ := resp.RowsAffected()
+
+	if err != nil || nRows == 0 {
+		log.Printf("Could not find user: %s", err)
+		return err
+	}
+
+	return nil
+}
+
 // func (u User) ChangePass(db *sql.DB, currentPass string, newPass string) bool {
 // 	query := `UPDATE groceries.users SET userpasswrod = $1 WHERE id = $2`
 

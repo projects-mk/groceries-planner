@@ -17,13 +17,15 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 	router := gin.Default()
+	router.Use(v1.CORSMiddleware())
 
 	db := db.GetDBClient()
 
 	apiV1 := router.Group("/api/v1")
-	apiV1.Use(v1.Auth())
+	apiV1.Use(v1.AuthMiddleware())
 
 	apiV1.GET("/healthcheck", v1.Healthcheck)
+
 	apiV1.GET("/items/list", v1.ListItemsHandler((db)))
 	apiV1.DELETE("/items/delete", v1.DeleteItemHandler(db))
 	apiV1.PUT("/items/add", v1.AddItemHandler(db))
@@ -35,7 +37,9 @@ func main() {
 	apiAuth.POST("/login", auth.LoginUserHandler(db))
 
 	apiUserManagement := router.Group("/api/user")
-	apiUserManagement.Use(v1.Auth())
+
+	apiUserManagement.Use(v1.AuthMiddleware())
+	apiUserManagement.POST("/jwt/verify", auth.VerifyUserTokenHandler(db))
 	apiUserManagement.DELETE("/delete", auth.DeleteUserHandler(db))
 
 	router.Run(":8080")

@@ -1,6 +1,8 @@
 import { Button, Grid, Space, TextInput, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import ProductComponent from './Product'
+import React from 'react';
+
 
 export interface ProductProps {
     itemId: number,

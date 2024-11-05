@@ -20,7 +20,7 @@ func CreateUserHandler(db *sql.DB) gin.HandlerFunc {
 
 		err := newUser.Register(db)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Error during registration " + err.Error()})
+			c.JSON(http.StatusForbidden, gin.H{"error": "Error during registration " + err.Error()})
 			return
 		}
 
@@ -40,7 +40,7 @@ func LoginUserHandler(db *sql.DB) gin.HandlerFunc {
 		JWTToken := user.Login(db)
 
 		if JWTToken == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Wrong Username or Password\n"})
+			c.JSON(http.StatusForbidden, gin.H{"error": "Wrong Username or Password "})
 			return
 		}
 		c.JSON(http.StatusOK, gin.H{"result": JWTToken})
@@ -61,6 +61,27 @@ func DeleteUserHandler(db *sql.DB) gin.HandlerFunc {
 
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Can't delete user:" + err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"result": "OK"})
+	}
+}
+
+func VerifyUserTokenHandler(db *sql.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		userId, _ := strconv.Atoi(c.GetString("AuthenticatedUserID"))
+		userEmail := c.GetString("AuthenticatedUserEmail")
+
+		user := User{
+			Id:    userId,
+			Email: userEmail,
+		}
+		err := user.VerifyUserToken(db)
+
+		if err != nil {
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
 			return
 		}
 

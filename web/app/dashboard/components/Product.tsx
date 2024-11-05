@@ -1,6 +1,8 @@
 import { Button, Menu, Group, Checkbox, Text, TextInput } from '@mantine/core';
 import { useState } from 'react';
 import { IconTrash, IconEdit } from '@tabler/icons-react';
+import React from 'react';
+
 
 export interface ProductProps {
     itemId: number,

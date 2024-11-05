@@ -2,7 +2,7 @@ import { Button, Paper, Grid, Group, Space, TextInput, Text, SimpleGrid, ScrollA
 import { useState } from 'react';
 import type { ProductProps } from './List'
 import ListComponent from './List'
-
+import React from 'react';
 
 export interface ListProps {
     title: string,
